@@ -4,6 +4,7 @@ import pandas as pd
 import matplotlib.pyplot as plt
 import seaborn as sns
 import plotly.express as px
+import matplotlib.animation as animation  # Explicitly imported for GIF rendering loops
 
 # Machine Learning Core Frameworks
 from sklearn.model_selection import train_test_split
@@ -166,28 +167,71 @@ def generate_static_graphics(df):
 
 
 # =========================================================================
-# 🎬 FUNCTION 6: INTERACTIVE WEB MATRIX SIMULATIONS
+# 🎬 FUNCTION 6: LOOPABLE ACADEMIC GIF ENGINE (UPGRADED)
 # =========================================================================
 def generate_interactive_animations(df):
     try:
-        print("\n🎬 Phase 5: Rendering Plotly Dynamic Sandbox Visuals & Animations...")
-        fig_scatter = px.scatter(
-            df, x="temperature", y="humidity", animation_frame="label",
-            size="rainfall", color="ph", hover_name="label", size_max=40,
-            title="Dynamic Climate Boundaries: Temperature vs Humidity Over Crop Selections"
-        )
-        fig_scatter.write_html(os.path.join(OUT_DIR, "climate_dynamics_animation.html"))
+        print("\n🎬 Phase 5: Compiling Frame Sequences into Loopable GIF Implementations...")
         
-        comp_df = df[df["label"].isin(["rice", "maize", "chickpea", "coffee"])]
-        fig_density = px.histogram(
-            comp_df, x="rainfall", color="label", marginal="box",
-            animation_frame="label", title="Simulated Rainfall Operational Density Profile Shift Matrix",
-            opacity=0.75
-        )
-        fig_density.write_html(os.path.join(OUT_DIR, "comparative_rainfall_density.html"))
-        print("🎬 Sandbox HTML frameworks written to outputs folder.")
+        # Get unique crop labels to drive sequential frame iteration
+        crop_labels = sorted(df['label'].unique())
+        
+        # Establish a clean Matplotlib figure base for climate telemetry tracking
+        fig, ax = plt.subplots(figsize=(10, 6))
+        sns.set_theme(style="whitegrid")
+        
+        def update_scatter_frame(frame_idx):
+            ax.clear()
+            current_crop = crop_labels[frame_idx]
+            subset = df[df['label'] == current_crop]
+            
+            # Map dynamic scatter plot matrices matching previous Plotly layouts
+            sc = ax.scatter(
+                subset['temperature'], subset['humidity'], 
+                s=subset['rainfall'] * 1.5, c=subset['ph'], 
+                cmap='viridis', alpha=0.7, edgecolors='w', vmin=4, vmax=9
+            )
+            
+            ax.set_xlim(df['temperature'].min() - 2, df['temperature'].max() + 2)
+            ax.set_ylim(df['humidity'].min() - 5, df['humidity'].max() + 5)
+            ax.set_xlabel("Ambient Temperature (°C)", fontsize=10)
+            ax.set_ylabel("Relative Humidity (%)", fontsize=10)
+            ax.set_title(f"Climate Footprint Matrix Mapping - Target Crop Category: {current_crop.upper()}", fontsize=11, weight='bold', pad=10)
+            return sc,
+
+        print("🎬 Building loopable Climate Dynamics sequence...")
+        ani_scatter = animation.FuncAnimation(fig, update_scatter_frame, frames=len(crop_labels), interval=800)
+        gif_scatter_path = os.path.join(OUT_DIR, "climate_dynamics_animation.gif")
+        ani_scatter.save(gif_scatter_path, writer='pillow', fps=1.2)
+        plt.close(fig)
+        
+        # Operational Density Shift Matrix (Rainfall distributions across major categories)
+        fig, ax = plt.subplots(figsize=(10, 6))
+        target_crops = ["rice", "maize", "chickpea", "coffee"]
+        comp_df = df[df["label"].isin(target_crops)]
+        
+        def update_density_frame(frame_idx):
+            ax.clear()
+            current_crop = target_crops[frame_idx]
+            subset = comp_df[comp_df['label'] == current_crop]
+            
+            sns.histplot(data=subset, x='rainfall', kde=True, ax=ax, color='teal', alpha=0.6)
+            ax.set_xlim(comp_df['rainfall'].min() - 10, comp_df['rainfall'].max() + 10)
+            ax.set_ylim(0, 120)  # Locked axis scale ensures visual integrity over updates
+            ax.set_xlabel("Historical Rainfall Metrics (mm)", fontsize=10)
+            ax.set_ylabel("Observation Hit Density", fontsize=10)
+            ax.set_title(f"Rainfall Operational Density Profile Shift Matrix: {current_crop.upper()}", fontsize=11, weight='bold', pad=10)
+            return ax,
+
+        print("🎬 Compiling Rainfall Operational Density GIF sequence...")
+        ani_density = animation.FuncAnimation(fig, update_density_frame, frames=len(target_crops), interval=1000)
+        gif_density_path = os.path.join(OUT_DIR, "comparative_rainfall_density.gif")
+        ani_density.save(gif_density_path, writer='pillow', fps=1)
+        plt.close(fig)
+        
+        print("✅ Loopable .gif animation assets successfully written to outputs folder.")
     except Exception as e:
-        print(f"❌ INTERACTIVE ANIMATION BLOCK FAILURE: {e}")
+        print(f"❌ ANIMATION ENGINE COMPILATION FAILURE: {e}")
 
 
 # =========================================================================
